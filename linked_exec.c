@@ -13,25 +13,24 @@ int main(int argc, char *argv[]) {
     Node *head = NULL, *tail = NULL;
     char buf[256];
 
-    if (argc > 1) {
-        for (int i = 1; i < argc; i++) {
-            Node *n = malloc(sizeof(Node));
-            strcpy(n->name, argv[i]);
-            n->next = NULL;
-            if (!head) head = tail = n;
-            else { tail->next = n; tail = n; }
-        }
-    } else {
-        printf("Enter app names (one per line, Ctrl+D to stop):\n");
+    if (argc < 2) {
+        printf("Usage: %s prog1 prog2 ...\n", argv[0]);
+        return 1;
+    }
 
-        while (fgets(buf, sizeof(buf), stdin)) {
-            buf[strcspn(buf, "\n")] = 0;
-            Node *n = malloc(sizeof(Node));
-            strcpy(n->name, buf);
-            n->next = NULL;
-            if (!head) head = tail = n;
-            else { tail->next = n; tail = n; }
-        }
+    for (int i = 1; i < argc; i++) {
+        Node *n = malloc(sizeof(Node));
+        strcpy(n->name, argv[i]);
+        n->next = NULL;
+        if (!head) head = tail = n;
+        else { tail->next = n; tail = n; }
+    }
+
+    printf("Linked list:\n");
+    Node *print_cur = head;
+    while (print_cur) {
+        printf("- %s\n", print_cur->name);
+        print_cur = print_cur->next;
     }
 
     Node *cur = head;
