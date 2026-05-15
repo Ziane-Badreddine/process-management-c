@@ -6,31 +6,27 @@
 
 typedef struct Node {
     char name[256];
+    pid_t pid;
     struct Node *next;
 } Node;
 
 int main(int argc, char *argv[]) {
     Node *head = NULL, *tail = NULL;
-    char buf[256];
 
     if (argc < 2) {
         printf("Usage: %s prog1 prog2 ...\n", argv[0]);
         return 1;
     }
 
-    for (int i = 1; i < argc; i++) {
+    int i = 1;
+    while (i < argc) {
         Node *n = malloc(sizeof(Node));
         strcpy(n->name, argv[i]);
+        n->pid = -1;
         n->next = NULL;
         if (!head) head = tail = n;
         else { tail->next = n; tail = n; }
-    }
-
-    printf("Linked list:\n");
-    Node *print_cur = head;
-    while (print_cur) {
-        printf("- %s\n", print_cur->name);
-        print_cur = print_cur->next;
+        i++;
     }
 
     Node *cur = head;
@@ -41,6 +37,13 @@ int main(int argc, char *argv[]) {
             perror("execlp");
             exit(1);
         }
+        cur->pid = pid;
+        cur = cur->next;
+    }
+
+    cur = head;
+    while (cur) {
+        printf("%s,%d%s", cur->name, cur->pid, cur->next ? " -> " : " -> NULL\n");
         cur = cur->next;
     }
 
